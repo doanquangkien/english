@@ -36,4 +36,5 @@ npm-debug.log*
 .gitnexus/
 .agents/
 .cursor/
+AGENTS/
 DOCS/
