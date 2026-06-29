@@ -1,0 +1,6 @@
+{
+  "name": "@edu-platform/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "main": ".prettierrc.json"
+}

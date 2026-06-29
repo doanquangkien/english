@@ -1,0 +1,41 @@
+{
+  "name": "@edu-platform/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.107.0",
+    "lucide-react": "^0.507.0",
+    "next": "^16.2.9",
+    "next-intl": "^4.3.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@edu-platform/eslint-config": "workspace:*",
+    "@edu-platform/prettier-config": "workspace:*",
+    "@edu-platform/tsconfig": "workspace:*",
+    "@eslint/js": "^9.39.4",
+    "@next/eslint-plugin-next": "^16.2.9",
+    "@tailwindcss/postcss": "^4.3.1",
+    "@types/node": "^24.2.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.40.0"
+  }
+}

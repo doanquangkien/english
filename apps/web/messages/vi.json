@@ -1,0 +1,33 @@
+{
+  "common": {
+    "siteName": "ENGLISH",
+    "tagline": "Nen tang hoc tieng Anh the he moi cho nguoi Viet Nam",
+    "comingSoon": "Sap ra mat",
+    "login": "Dang nhap",
+    "register": "Dang ky",
+    "dashboard": "Bang dieu khien",
+    "admin": "Quan tri",
+    "logout": "Dang xuat"
+  },
+  "landing": {
+    "title": "ENGLISH - Nen tang hoc tieng Anh the he moi",
+    "description": "Ket hop 6 ky nang (Doc - Nghe - Noi - Viet - Ngu phap - Tu vung) voi AI cham diem va SRS.",
+    "cta": "Bat dau hoc mien phi"
+  },
+  "auth": {
+    "loginTitle": "Dang nhap",
+    "registerTitle": "Dang ky",
+    "emailLabel": "Email",
+    "passwordLabel": "Mat khau",
+    "submitLogin": "Dang nhap",
+    "submitRegister": "Tao tai khoan"
+  },
+  "dashboard": {
+    "title": "Bang dieu khien",
+    "welcome": "Chao mung quay tro lai"
+  },
+  "admin": {
+    "title": "Quan tri",
+    "overview": "Tong quan he thong"
+  }
+}

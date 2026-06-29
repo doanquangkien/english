@@ -39,3 +39,10 @@ npm-debug.log*
 AGENTS/
 DOCS/
 settings.local.json
+MEDIA/
+
+# TypeScript
+*.tsbuildinfo
+
+# Claude Code
+.claude/

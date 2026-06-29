@@ -1,57 +1,76 @@
 echo "========================================"
-echo "🛡️  AGENTS PRE-COMMIT CHECK 🛡️"
+echo "  ENGLISH - PRE-COMMIT CHECK"
 echo "========================================"
 
 # Check if .env exists but is not gitignored
 if [ -f ".env" ]; then
     if ! git check-ignore -q .env; then
-        echo "❌ LỖI NGHIÊM TRỌNG: File .env đang bị theo dõi bởi git!"
-        echo "   Vui lòng thêm .env vào .gitignore và chạy lệnh:"
-        echo "   git rm --cached .env"
-        echo "   Commit bị từ chối."
+        echo "[ERROR] File .env is tracked by git!"
+        echo "   Add .env to .gitignore and run: git rm --cached .env"
+        echo "   Commit rejected."
         exit 1
     fi
 fi
 
-# Hard block for typical secrets (exclude .husky and TEMPLATES from the diff)
+# Hard block for typical secrets
 if git diff --cached --name-only | grep -vE '(\.husky/|TEMPLATES/)' | xargs -r -I {} git diff --cached -- {} | grep -iE 'AKIA[0-9A-Z]{16}|BEGIN RSA PRIVATE KEY|password\s*=\s*['"'"'"][^'"'"'"]+['"'"'"]'; then
-    echo "❌ LỖI BẢO MẬT: Phát hiện mã bí mật (secrets/keys) trong file sắp commit!"
-    echo "   Bạn đã chạy lệnh /security-scan chưa?"
-    echo "   Commit bị từ chối."
+    echo "[ERROR] Secrets/keys detected in staged files!"
+    echo "   Run /security-scan before committing."
+    echo "   Commit rejected."
     exit 1
 fi
 
 # Anti-Any (TypeScript Strict Mode)
 if git diff --cached --name-only | grep -E '\.(ts|tsx)$' | grep -v '\.husky/' | xargs -r -I {} git diff --cached -- {} | grep -E '^\+.*(: any|as any)'; then
-    echo "❌ LỖI CLEAN CODE: Phát hiện sử dụng type 'any' trong TypeScript!"
-    echo "   Dự án này cấm dùng 'any'. Vui lòng định nghĩa type cụ thể."
-    echo "   Commit bị từ chối."
+    echo "[ERROR] Type 'any' detected in TypeScript files!"
+    echo "   This project bans 'any'. Use specific types."
+    echo "   Commit rejected."
     exit 1
 fi
 
-# ----------------------------------------
-# Kiểm tra số lượng dòng (Rule: < 300 lines)
-# ----------------------------------------
+# File line count (Rule: <= 300 lines)
 oversized_files=0
 for file in $(git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx|rs|css)$' | grep -v '\.husky/'); do
     if [ -f "$file" ]; then
         line_count=$(wc -l < "$file")
         if [ "$line_count" -gt 300 ]; then
-            echo "   ❌ File quá dài ($line_count dòng): $file"
+            echo "   [FAIL] File too long ($line_count lines): $file"
             oversized_files=1
         fi
     fi
 done
 
 if [ "$oversized_files" -eq 1 ]; then
-    echo "❌ LỖI CLEAN CODE: Phát hiện file vượt quá định mức 300 dòng!"
-    echo "   Dự án này tuân thủ chặt chẽ AGENTS Manifesto: mọi file code KHÔNG ĐƯỢC QUÁ 300 dòng."
-    echo "   Vui lòng tiến hành Refactor: Tách component, chia module, hoặc đưa logic ra custom hook."
-    echo "   Commit bị từ chối."
+    echo "[ERROR] Files exceed 300-line limit!"
+    echo "   Refactor: split components, extract modules, or create custom hooks."
+    echo "   Commit rejected."
     exit 1
 fi
 
-echo "✅ Kiểm tra bảo mật cơ bản: PASS"
-echo "⚠️  LỜI NHẮC TRƯỚC KHI NGHỈ: Đừng quên cập nhật file [Host-Root]/.agents/handoff.md sau commit này!"
+# Emoji check (SPEC Chapter 32)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
+if [ -n "$STAGED_FILES" ]; then
+  emoji_found=0
+  for f in $STAGED_FILES; do
+    if [ -f "$f" ]; then
+      EMOJI=$(grep -n $'\xEF\xB8\x8F\|[\xF0\x9F\x8F\x80-\xF0\x9F\x8F\x8F]\|[\xF0\x9F\x98\x80-\xF0\x9F\x98\x8F]\|[\xF0\x9F\x99\x80-\xF0\x9F\x99\x8F]\|[\xE2\x9D\xA4\xEF\xB8\x8F]\|[\xE2\x9C\xA8]\|[\xF0\x9F\x91\x8D]\|[\xF0\x9F\x94\xA5]' "$f" 2>/dev/null || true)
+      if [ -n "$EMOJI" ]; then
+        echo "   [FAIL] Emoji found in $f"
+        emoji_found=1
+      fi
+    fi
+  done
+  if [ "$emoji_found" -eq 1 ]; then
+    echo "[ERROR] Emoji are not allowed in this project (SPEC Chapter 32)."
+    echo "   Commit rejected."
+    exit 1
+  fi
+fi
+
+echo "[OK] Security check: PASS"
+echo "[OK] Line count: PASS"
+echo "[OK] Emoji check: PASS"
 echo "========================================"
-exit 0
+
+# Run lint-staged (formatting)
+npx lint-staged --allow-empty
