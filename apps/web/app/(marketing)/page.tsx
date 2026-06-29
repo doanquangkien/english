@@ -1,8 +1,4 @@
-import { getTranslations } from "next-intl/server";
-
-export default async function MarketingPage() {
-  const t = await getTranslations("landing");
-
+export default function MarketingPage() {
   return (
     <div className="flex min-h-[80vh] flex-col items-center justify-center px-4 text-center">
       <div className="max-w-2xl space-y-8">
@@ -11,9 +7,12 @@ export default async function MarketingPage() {
             ENGLISH
           </p>
           <h1 className="text-4xl font-medium leading-tight text-foreground">
-            {t("title")}
+            ENGLISH — Nen tang hoc tieng Anh the he moi
           </h1>
-          <p className="text-base text-muted-foreground">{t("description")}</p>
+          <p className="text-base text-muted-foreground">
+            Ket hop 6 ky nang (Doc — Nghe — Noi — Viet — Ngu phap — Tu vung) voi
+            AI cham diem va SRS.
+          </p>
         </div>
 
         <div className="rounded-[4px] border border-border bg-card px-8 py-6">

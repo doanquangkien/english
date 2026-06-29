@@ -1,13 +1,9 @@
-import { getTranslations } from "next-intl/server";
-
-export default async function AdminPage() {
-  const t = await getTranslations("admin");
-
+export default function AdminPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-medium text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("overview")}</p>
+        <h1 className="text-2xl font-medium text-foreground">Quan tri</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Tong quan he thong</p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

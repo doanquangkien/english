@@ -1,14 +1,8 @@
-import { getTranslations } from "next-intl/server";
-
-export default async function LoginPage() {
-  const t = await getTranslations("auth");
-
+export default function LoginPage() {
   return (
     <div className="rounded-[4px] border border-border bg-card p-8">
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-medium text-foreground">
-          {t("loginTitle")}
-        </h1>
+        <h1 className="text-2xl font-medium text-foreground">Dang nhap</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Dang nhap de bat dau hoc
         </p>
@@ -20,7 +14,7 @@ export default async function LoginPage() {
             htmlFor="email"
             className="block text-sm font-medium text-foreground"
           >
-            {t("emailLabel")}
+            Email
           </label>
           <input
             id="email"
@@ -36,7 +30,7 @@ export default async function LoginPage() {
             htmlFor="password"
             className="block text-sm font-medium text-foreground"
           >
-            {t("passwordLabel")}
+            Mat khau
           </label>
           <input
             id="password"
@@ -52,7 +46,7 @@ export default async function LoginPage() {
           disabled
           className="w-full rounded-[4px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {t("submitLogin")}
+          Dang nhap
         </button>
       </div>
 

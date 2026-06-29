@@ -1,13 +1,13 @@
-import { getTranslations } from "next-intl/server";
-
-export default async function DashboardPage() {
-  const t = await getTranslations("dashboard");
-
+export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-medium text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("welcome")}</p>
+        <h1 className="text-2xl font-medium text-foreground">
+          Bang dieu khien
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Chao mung quay tro lai
+        </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
