@@ -1,1 +1,26 @@
 * text=auto eol=lf
+# Normalize line endings to LF for all text files
+* text=auto eol=lf
+
+# Explicitly mark text files
+*.md text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.env text eol=lf
+
+# Binary files — never modify
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff2 binary
+*.woff binary
+*.ttf binary
