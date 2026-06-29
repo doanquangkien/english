@@ -16,18 +16,55 @@
   },
   "auth": {
     "loginTitle": "Đăng nhập",
+    "loginSubtitle": "Đăng nhập để bắt đầu học",
     "registerTitle": "Đăng ký",
+    "registerSubtitle": "Tạo tài khoản miễn phí",
     "emailLabel": "Email",
     "passwordLabel": "Mật khẩu",
     "submitLogin": "Đăng nhập",
-    "submitRegister": "Tạo tài khoản"
+    "submitRegister": "Tạo tài khoản",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+    "haveAccount": "Đã có tài khoản?",
+    "loginNow": "Đăng nhập",
+    "divider": "hoặc",
+    "googleButton": "Tiếp tục với Google",
+    "magicLinkButton": "Đăng nhập không cần mật khẩu",
+    "magicLinkTitle": "Kiểm tra email của bạn",
+    "magicLinkDescription": "Chúng tôi đã gửi link đăng nhập đến {email}",
+    "magicLinkResend": "Gửi lại",
+    "backToLogin": "Quay lại đăng nhập",
+    "errors": {
+      "invalidCredentials": "Email hoặc mật khẩu không đúng",
+      "emailTaken": "Email đã được sử dụng",
+      "tooManyRequests": "Quá nhiều lần thử. Vui lòng đợi.",
+      "generic": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    }
+  },
+  "onboarding": {
+    "title": "Chào mừng đến với ENGLISH!",
+    "subtitle": "Hãy cho chúng tôi biết một chút về bạn",
+    "step1Title": "Trình độ hiện tại của bạn?",
+    "step2Title": "Mục tiêu hằng ngày?",
+    "submit": "Bắt đầu học!"
   },
   "dashboard": {
     "title": "Bảng điều khiển",
-    "welcome": "Chào mừng quay trở lại"
+    "welcome": "Chào mừng quay trở lại",
+    "stats": {
+      "streak": "Ngày liên tiếp",
+      "xp": "Tổng XP",
+      "level": "Trình độ"
+    }
   },
   "admin": {
     "title": "Quản trị",
-    "overview": "Tổng quan hệ thống"
+    "overview": "Tổng quan hệ thống",
+    "stats": {
+      "totalUsers": "Tổng người dùng",
+      "totalCourses": "Tổng khoá học",
+      "activeToday": "Hoạt động hôm nay"
+    }
   }
 }

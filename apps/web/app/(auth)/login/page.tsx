@@ -1,58 +1,71 @@
+"use client";
+
+import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import { AuthCard } from "@/components/auth/auth-card";
+import { LoginForm } from "@/components/auth/login-form";
+import { RegisterForm } from "@/components/auth/register-form";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { MagicLinkForm } from "@/components/auth/magic-link-form";
+
+type AuthView = "login" | "register" | "magic-link";
+
 export default function LoginPage() {
+  const [view, setView] = useState<AuthView>("login");
+
+  if (view === "magic-link") {
+    return (
+      <AuthCard
+        title="Đăng nhập không cần mật khẩu"
+        subtitle="Nhập email để nhận link đăng nhập"
+      >
+        <MagicLinkForm onBack={() => setView("login")} />
+      </AuthCard>
+    );
+  }
+
+  if (view === "register") {
+    return (
+      <AuthCard title="Đăng ký" subtitle="Tạo tài khoản miễn phí">
+        <RegisterForm />
+
+        <div className="mt-6 text-center text-sm text-muted-foreground">
+          Đã có tài khoản?{" "}
+          <button
+            type="button"
+            onClick={() => setView("login")}
+            className="font-medium text-primary hover:underline"
+          >
+            Đăng nhập
+          </button>
+        </div>
+      </AuthCard>
+    );
+  }
+
+  // Login view (default)
   return (
-    <div className="rounded-[4px] border border-border bg-card p-8">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-medium text-foreground">Đăng nhập</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Đăng nhập để bắt đầu học
-        </p>
+    <AuthCard title="Đăng nhập" subtitle="Đăng nhập để bắt đầu học">
+      <LoginForm onSwitchToMagicLink={() => setView("magic-link")} />
+
+      <div className="my-6 flex items-center gap-3">
+        <Separator className="flex-1" />
+        <span className="text-xs text-muted-foreground">hoặc</span>
+        <Separator className="flex-1" />
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-foreground"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder="name@example.com"
-            disabled
-            className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
+      <OAuthButtons />
 
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-foreground"
-          >
-            Mật khẩu
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="********"
-            disabled
-            className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
-
+      <div className="mt-6 text-center text-sm text-muted-foreground">
+        Chưa có tài khoản?{" "}
         <button
           type="button"
-          disabled
-          className="w-full rounded-[4px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => setView("register")}
+          className="font-medium text-primary hover:underline"
         >
-          Đăng nhập
+          Đăng ký ngay
         </button>
       </div>
-
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        Chức năng đăng nhập sẽ hoạt động ở Phase 01
-      </p>
-    </div>
+    </AuthCard>
   );
 }

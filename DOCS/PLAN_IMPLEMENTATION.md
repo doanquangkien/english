@@ -4,7 +4,7 @@
 >
 > Đánh dấu `[x]` khi task hoàn thành. Cập nhật `**Status:**` của phase: `⬜ Chưa bắt đầu` → `🟡 Đang làm` → `✅ Hoàn thành`.
 
-**CURRENT PHASE: Phase 00 — Infrastructure** (tìm phase có status 🟡 hoặc phase ⬜ đầu tiên)
+**CURRENT PHASE: Phase 02 — LMS Core** (tìm phase có status 🟡 hoặc phase ⬜ đầu tiên)
 
 > ⚠️ **Lưu ý cho Agent:** Checklist tổng hợp (trước code, trước PR, go-live) nằm ở [`CHECKLIST.md`](CHECKLIST.md) — đọc trước khi bắt đầu phase đầu tiên. File này chỉ chứa task chi tiết từng phase.
 
@@ -130,22 +130,121 @@
 
 **Output:** Đăng nhập/đăng ký hoạt động (email, Google, Magic Link), schema core + RLS, mỗi role thấy đúng layout
 
-**Status:** ⬜ Chưa bắt đầu
+**Status:** ✅ Hoàn thành (code) — chờ Founder cấp Supabase keys + chạy migration
 
-**Phụ thuộc:** Phase 00 hoàn thành
+**Phụ thuộc:** Phase 00 hoàn thành + Supabase API keys trong `.env.local`
+
+> 📖 **Trước khi code, đọc:** [`PHASE_01_QUEST.md`](PHASE_01_QUEST.md) — 31 quyết định đã chốt (next-intl strategy, shadcn config, form library, onboarding flow, RLS pattern, middleware matcher, state machine...)
 
 <details>
 <summary>📋 Chi tiết task (cho AI Agent)</summary>
 
-- [ ] Supabase Auth: Email/Password + Google OAuth + Magic Link
-- [ ] Migration: `profiles`, `organizations`, `permissions`
-- [ ] Postgres trigger `handle_new_user()` tự tạo profile
-- [ ] Hàm helper `current_user_role()` cho RLS policy
-- [ ] RLS policies + GRANT cho toàn bộ bảng core
-- [ ] Middleware auth guard: redirect /login nếu không có session
-- [ ] Route group layouts: `(marketing)`, `(auth)`, `(app)`, `(admin)`
-- [ ] Trang Onboarding sau đăng ký lần đầu (chọn CEFR level, daily goal)
-- [ ] Trang Login/Register UI
+### 01.0 — Tiền điều kiện
+- [ ] Kiểm tra `.env.local` có đủ `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [ ] `npx shadcn@latest init` — style: default, baseColor: neutral, cssVariables: true, rsc: true, tsx: true, aliases: `@/components` + `@/lib/utils`
+- [ ] Cài shadcn components: `button`, `input`, `label`, `form`, `card`, `separator`, `sonner`
+- [ ] Cài `react-hook-form` + `zod` + `@hookform/resolvers`
+
+### 01.1 — Database: Migration 001
+- [ ] Tạo enum `user_role` (`student`, `teacher`, `admin`, `super_admin`)
+- [ ] Tạo enum `cefr_level` (`A1`, `A2`, `B1`, `B2`, `C1`, `C2`)
+- [ ] Tạo bảng `organizations` (id, name, slug UNIQUE, owner_id FK→profiles, plan, created_at)
+- [ ] Tạo bảng `profiles` (id PK FK→auth.users, org_id nullable FK→organizations, display_name, username UNIQUE nullable, avatar_url, role, cefr_level, native_language, timezone, daily_goal_minutes, current_streak, longest_streak, total_xp, onboarding_completed_at, created_at, updated_at)
+- [ ] Tạo bảng `permissions` (role, resource, action, allowed) — PK kép (role, resource, action)
+- [ ] Trigger `handle_new_user()`: AFTER INSERT ON auth.users → INSERT INTO profiles (id, role='student')
+- [ ] Function `current_user_role()`: returns user_role from profiles where id = auth.uid()
+- [ ] Enable RLS trên cả 3 bảng
+- [ ] GRANT SELECT, INSERT, UPDATE, DELETE ON profiles, organizations, permissions TO authenticated
+- [ ] GRANT SELECT ON profiles, organizations TO anon
+- [ ] RLS policies cho `profiles`: SELECT (của mình hoặc admin), INSERT (authenticated), UPDATE (của mình hoặc admin)
+- [ ] RLS policies cho `organizations`: SELECT (thành viên org hoặc admin), INSERT (authenticated), UPDATE (owner hoặc admin)
+- [ ] RLS policies cho `permissions`: SELECT (authenticated), INSERT/UPDATE/DELETE (super_admin only)
+- [ ] Seed `permissions`: 4 role × resources hiện tại (profiles, organizations) × actions (create, read, update, delete) theo matrix SPEC 5.4
+- [ ] Chạy `npx supabase db push` lên cloud
+
+### 01.2 — Supabase Types & Clients
+- [ ] Generate types: `npx supabase gen types typescript --linked > apps/web/lib/supabase/database.types.ts`
+- [ ] Verify `lib/supabase/server.ts` — `createServerClient` dùng cookies từ `next/headers`
+- [ ] Verify `lib/supabase/client.ts` — `createBrowserClient` cho Client Components
+- [ ] Thêm `createServiceClient` trong `lib/supabase/server.ts` — dùng `SUPABASE_SERVICE_ROLE_KEY` (server-only, bypass RLS)
+
+### 01.3 — next-intl tái tích hợp
+- [ ] Cập nhật `src/i18n/routing.ts`: locale `vi` default, `as-needed` prefix
+- [ ] Cập nhật `src/i18n/request.ts`: `setRequestLocale` pattern — gọi trong từng layout/page, KHÔNG gọi trong root layout
+- [ ] Bổ sung `messages/vi.json`: namespace `auth` (login, register, oauth, magicLink, errors) + `onboarding` (title, steps, submit)
+- [ ] Root layout: thêm `NextIntlClientProvider` (messages loaded từ page-level, không phải root)
+- [ ] Middleware: KHÔNG dùng `intlMiddleware` (tránh Dynamic route)
+
+### 01.4 — Auth UI: Login/Register
+- [ ] Tạo `components/auth/auth-card.tsx` — wrapper centered card (rounded-none, border, nền card)
+- [ ] Tạo `components/auth/login-form.tsx` — email + password + submit button + "Quên mật khẩu?" link
+- [ ] Tạo `components/auth/register-form.tsx` — display_name + email + password + confirm_password + submit
+- [ ] Tạo `components/auth/oauth-buttons.tsx` — Google OAuth button + Magic Link button
+- [ ] Tạo `components/auth/magic-link-form.tsx` — email input + "Gửi link đăng nhập" + trạng thái "Check email"
+- [ ] Tạo `lib/validations/auth.ts` — Zod schemas: `loginSchema`, `registerSchema`, `magicLinkSchema`
+- [ ] Form validation: Email required+format+max255, Password min8+max128, Display Name min2+max100, Confirm Password match
+- [ ] Toggle show/hide password (icon eye/eye-off)
+- [ ] State machine: idle → submitting → success → redirecting; submitting → error → idle
+- [ ] Dùng `useActionState` (React 19) cho form submission
+- [ ] Toast notification qua `sonner` (success: "Đăng nhập thành công", error: hiển thị lỗi cụ thể)
+- [ ] Tab Login | Register trên cùng 1 page `/login`
+- [ ] Cập nhật `app/(auth)/login/page.tsx` — thay placeholder bằng form thật
+- [ ] Cập nhật `app/(auth)/layout.tsx` — centered layout, không header/footer
+
+### 01.5 — Auth Logic: Server Actions
+- [ ] Tạo `lib/actions/auth.ts`:
+  - `signInWithPassword(formData)` — supabase.auth.signInWithPassword → set cookie → return redirect URL
+  - `signUp(formData)` — supabase.auth.signUp → return success/error (email verification off)
+  - `signInWithGoogle()` — supabase.auth.signInWithOAuth('google') → return redirect URL
+  - `signInWithMagicLink(formData)` — supabase.auth.signInWithOtp → return success/error
+  - `signOut()` — supabase.auth.signOut → redirect /login
+- [ ] Error mapping: Supabase error code → tiếng Việt message (invalid_credentials → "Email hoặc mật khẩu không đúng", email_taken → "Email đã được sử dụng", ...)
+
+### 01.6 — Auth Callback
+- [ ] Tạo `app/(auth)/auth/callback/route.ts`:
+  - GET handler: `exchangeCodeForSession(code)` → lấy user → check `onboarding_completed_at`
+  - Redirect: IS NULL → `/onboarding?next=<...>`, NOT NULL → `/<next_param>` hoặc `/dashboard`
+- [ ] Whitelist redirect URLs trong Supabase dashboard: production, localhost, staging
+
+### 01.7 — Middleware nâng cấp
+- [ ] Thay hardcode cookie check → `createServerClient` + `getUser()`
+- [ ] Matcher config: `/dashboard/:path*`, `/admin/:path*`, `/login`, `/onboarding`, `/auth/callback`
+- [ ] Logic:
+  - `/dashboard/*` hoặc `/admin/*` không user → redirect `/login?next=<original_url>`
+  - `/login` có user → redirect `/dashboard`
+  - `/onboarding` có user + `onboarding_completed_at` NOT NULL → redirect `/dashboard`
+  - `/auth/callback` → để route handler xử lý
+- [ ] KHÔNG check role trong middleware — để layout `(admin)/layout.tsx` check
+
+### 01.8 — Onboarding Flow
+- [ ] Tạo `components/auth/onboarding-form.tsx` — 2 bước (step 1: chọn CEFR, step 2: chọn daily goal)
+- [ ] Mỗi option hiển thị label tiếng Việt + mô tả ngắn
+- [ ] Tạo route `app/(app)/onboarding/page.tsx` — full-page, không sidebar
+- [ ] Server Action `completeOnboarding(cefr_level, daily_goal_minutes)`:
+  - UPDATE profiles SET cefr_level, daily_goal_minutes, onboarding_completed_at = now()
+  - Redirect `/dashboard`
+- [ ] Middleware: bảo vệ `/onboarding` — chỉ user đã login mới vào được
+
+### 01.9 — Role-based Layouts
+- [ ] `(admin)/layout.tsx`: check `current_user_role()` — nếu NOT IN ('admin', 'super_admin') → redirect `/dashboard`
+- [ ] `(app)/layout.tsx`: hiển thị sidebar + user info (display_name, avatar placeholder)
+- [ ] `(admin)/admin/page.tsx`: thay placeholder — hiển thị "Admin Dashboard" + stats thật (total users, total courses)
+- [ ] `(app)/dashboard/page.tsx`: thay placeholder — hiển thị welcome message + CEFR level + daily goal
+
+### 01.10 — Verify
+- [ ] `pnpm lint` + `pnpm typecheck` + `pnpm build` pass
+- [ ] Migration 001 chạy trên Supabase cloud không lỗi
+- [ ] Đăng ký email/password → `handle_new_user()` trigger tạo profile
+- [ ] Đăng nhập email/password → redirect `/dashboard`
+- [ ] Google OAuth → callback → redirect đúng
+- [ ] Magic Link → gửi email → click → đăng nhập
+- [ ] User mới → `/onboarding` → chọn level + goal → redirect `/dashboard`
+- [ ] `/dashboard` không session → redirect `/login?next=/dashboard`
+- [ ] `/admin` không session → redirect `/login`
+- [ ] `/admin` role=student → redirect `/dashboard`
+- [ ] Middleware dùng `getUser()` — không còn hardcode cookie
+- [ ] next-intl: text tiếng Việt hiển thị đúng từ `vi.json`
+- [ ] RLS: user A không đọc được profile user B (test manual qua Supabase dashboard)
 
 </details>
 

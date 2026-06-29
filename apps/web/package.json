@@ -10,14 +10,25 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "@radix-ui/react-label": "^2.1.10",
+    "@radix-ui/react-separator": "^1.1.10",
+    "@radix-ui/react-slot": "^1.3.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.107.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.507.0",
     "next": "^16.2.9",
     "next-intl": "^4.3.4",
+    "next-themes": "^0.4.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "tailwindcss": "^4.3.1"
+    "react-hook-form": "^7.80.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@edu-platform/eslint-config": "workspace:*",
@@ -33,6 +44,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "pg": "^8.22.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "typescript": "^6.0.3",
