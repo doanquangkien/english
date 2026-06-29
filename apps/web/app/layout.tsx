@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro, JetBrains_Mono } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages, setRequestLocale } from "next-intl/server";
-import { routing } from "@/src/i18n/routing";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -33,40 +30,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let locale: string;
-  try {
-    locale = await getLocale();
-    if (!routing.locales.includes(locale as never)) {
-      locale = routing.defaultLocale;
-    }
-  } catch {
-    locale = routing.defaultLocale;
-  }
-
-  setRequestLocale(locale);
-
-  let messages: Record<string, string> = {};
-  try {
-    messages = (await getMessages()) as Record<string, string>;
-  } catch {
-    // Fallback: empty messages, pages should handle missing translations
-  }
-
   return (
     <html
-      lang={locale}
+      lang="vi"
       className={`${beVietnamPro.variable} ${jetbrainsMono.variable} dark`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans font-normal text-foreground antialiased">
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          {children}
-        </NextIntlClientProvider>
+        {children}
       </body>
     </html>
   );
