@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: {
     template: "%s | ENGLISH",
-    default: "ENGLISH — Nen tang hoc tieng Anh the he moi",
+    default: "Nen tang hoc tieng Anh the he moi",
   },
   description:
     "Nen tang hoc tieng Anh the he moi cho nguoi Viet Nam (A1–C2). Ket hop 6 ky nang voi AI cham diem va SRS.",

@@ -7,7 +7,7 @@ export default function MarketingPage() {
             ENGLISH
           </p>
           <h1 className="text-4xl font-medium leading-tight text-foreground">
-            ENGLISH — Nen tang hoc tieng Anh the he moi
+            Nen tang hoc tieng Anh the he moi
           </h1>
           <p className="text-base text-muted-foreground">
             Ket hop 6 ky nang (Doc — Nghe — Noi — Viet — Ngu phap — Tu vung) voi
